@@ -5,7 +5,7 @@ info:
 servers:
   - url: /
 paths:
-  /logs:
+  /api/logs:
     get:
       operationId: logs_get
       summary: Get all logs
@@ -26,7 +26,7 @@ paths:
         "201":
           description: Log created
 
-  /logs/{date}:
+  /api/logs/{date}:
     get:
       operationId: logs_date_get
       summary: Get log by date

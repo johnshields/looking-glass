@@ -1,24 +1,39 @@
 import connexion
 from typing import Dict, Tuple, Union
 from datetime import datetime
+from app.database.db import SessionLocal
+from sqlalchemy import text
 
 from app.openapi_server.models.daily_log import DailyLog  # noqa: E501
 
 
-def logs_date_delete(_date: str) -> tuple[None, int, dict[str, str]] | str:
-    """Delete log by date
-
-    :param _date: The date of the log to delete
-    :type _date: str
-    :rtype: Union[None, Tuple[None, int], Tuple[None, int, Dict[str, str]]]
-    """
+def logs_get() -> str:
+    """Get all logs"""
     try:
-        parsed_date = datetime.strptime(_date, "%Y-%m-%d").date()
-    except ValueError:
-        return None, 400, {"error": "Invalid date format, expected YYYY-MM-DD"}
+        db = SessionLocal()
+        result = db.execute(
+            text("SELECT id, title, entries, log_date, tags, mood, created_at, updated_at FROM daily_log"))
+        logs = []
 
-    # TODO: implement deletion logic
-    return 'do some magic!'
+        for row in result.fetchall():
+            logs.append({
+                "id": row.id,
+                "title": row.title,
+                "entries": row.entries,
+                "date": row.log_date.isoformat() if row.log_date else None,
+                "tags": row.tags.split(",") if row.tags else [],
+                "mood": row.mood,
+                "created_at": row.created_at.isoformat(),
+                "updated_at": row.updated_at.isoformat()
+            })
+
+        return logs, 200
+
+    except Exception as e:
+        return None, 500, {"error": str(e)}
+
+    finally:
+        db.close()
 
 
 def logs_date_get(_date: str) -> tuple[None, int, dict[str, str]] | str:
@@ -34,6 +49,22 @@ def logs_date_get(_date: str) -> tuple[None, int, dict[str, str]] | str:
         return None, 400, {"error": "Invalid date format, expected YYYY-MM-DD"}
 
     # TODO: implement retrieval logic
+    return 'do some magic!'
+
+
+def logs_date_delete(_date: str) -> tuple[None, int, dict[str, str]] | str:
+    """Delete log by date
+
+    :param _date: The date of the log to delete
+    :type _date: str
+    :rtype: Union[None, Tuple[None, int], Tuple[None, int, Dict[str, str]]]
+    """
+    try:
+        parsed_date = datetime.strptime(_date, "%Y-%m-%d").date()
+    except ValueError:
+        return None, 400, {"error": "Invalid date format, expected YYYY-MM-DD"}
+
+    # TODO: implement deletion logic
     return 'do some magic!'
 
 
@@ -57,15 +88,6 @@ def logs_date_put(_date: str, body=None) -> tuple[None, int, dict[str, str]] | s
         return None, 400, {"error": "Request body must be JSON"}
 
     # TODO: implement update logic
-    return 'do some magic!'
-
-
-def logs_get() -> str:
-    """Get all logs
-
-    :rtype: Union[None, Tuple[None, int], Tuple[None, int, Dict[str, str]]]
-    """
-    # TODO: implement logic to return all logs
     return 'do some magic!'
 
 
