@@ -2,7 +2,7 @@ import connexion
 from typing import Dict, Tuple, Union
 from datetime import datetime
 
-from openapi_server.models.daily_log import DailyLog  # noqa: E501
+from app.openapi_server.models.daily_log import DailyLog  # noqa: E501
 
 
 def logs_date_delete(_date: str) -> tuple[None, int, dict[str, str]] | str:
