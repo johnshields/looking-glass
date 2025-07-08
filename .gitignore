@@ -1,0 +1,77 @@
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+env/
+.venv/
+venv/
+.python-version
+
+# Build artifacts
+build/
+dist/
+downloads/
+.eggs/
+*.egg-info/
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Coverage/test/cache
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+.pytest_cache/
+htmlcov/
+
+# Jupyter/IPython
+.ipynb_checkpoints/
+
+# Logs
+*.log
+
+# Documentation
+docs/_build/
+
+# Virtual environment and tooling
+.Python
+develop-eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+target/
+
+# Docker artifacts
+*.tar
+*.pid
+*.sock
+
+# OpenAPI Generated code (optional — keep if you regenerate often)
+out/
+
+# IDEs and system files
+*.DS_Store
+*.swp
+*.swo
+*.bak
+*.tmp
+.vscode/
+.idea/
+
+# Secret files (optional, depending on usage)
+.env
+.env.*

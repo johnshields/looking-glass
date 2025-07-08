@@ -1,0 +1,103 @@
+openapi: 3.0.0
+info:
+  title: Looking Glass API
+  version: 1.0.0
+servers:
+  - url: /
+paths:
+  /logs:
+    get:
+      operationId: logs_get
+      summary: Get all logs
+      x-openapi-router-controller: openapi_server.controllers.log_controller
+      responses:
+        "200":
+          description: List of daily logs
+    post:
+      operationId: logs_post
+      summary: Create a new daily log
+      x-openapi-router-controller: openapi_server.controllers.log_controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DailyLog"
+      responses:
+        "201":
+          description: Log created
+
+  /logs/{date}:
+    get:
+      operationId: logs_date_get
+      summary: Get log by date
+      x-openapi-router-controller: openapi_server.controllers.log_controller
+      parameters:
+        - in: path
+          name: date
+          required: true
+          explode: false
+          style: simple
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Log found
+        "404":
+          description: Not found
+
+    put:
+      operationId: logs_date_put
+      summary: Update log by date
+      x-openapi-router-controller: openapi_server.controllers.log_controller
+      parameters:
+        - in: path
+          name: date
+          required: true
+          explode: false
+          style: simple
+          schema:
+            type: string
+            format: date
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DailyLog"
+      responses:
+        "200":
+          description: Log updated
+
+    delete:
+      operationId: logs_date_delete
+      summary: Delete log by date
+      x-openapi-router-controller: openapi_server.controllers.log_controller
+      parameters:
+        - in: path
+          name: date
+          required: true
+          explode: false
+          style: simple
+          schema:
+            type: string
+            format: date
+      responses:
+        "204":
+          description: Deleted
+
+components:
+  schemas:
+    DailyLog:
+      title: DailyLog
+      type: object
+      properties:
+        date:
+          title: date
+          type: string
+          format: date
+        entries:
+          title: entries
+          type: string
+      example:
+        date: 2000-01-23
+        entries: entries
