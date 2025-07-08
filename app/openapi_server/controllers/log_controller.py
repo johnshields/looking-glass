@@ -36,20 +36,44 @@ def logs_get() -> str:
         db.close()
 
 
-def logs_date_get(_date: str) -> tuple[None, int, dict[str, str]] | str:
-    """Get log by date
-
-    :param _date: The date of the log to retrieve
-    :type _date: str
-    :rtype: Union[None, Tuple[None, int], Tuple[None, int, Dict[str, str]]]
-    """
+def logs_date_get(date: str):
+    """Get log by date"""
     try:
-        parsed_date = datetime.strptime(_date, "%Y-%m-%d").date()
+        parsed_date = datetime.strptime(date, "%Y-%m-%d").date()
     except ValueError:
         return None, 400, {"error": "Invalid date format, expected YYYY-MM-DD"}
 
-    # TODO: implement retrieval logic
-    return 'do some magic!'
+    try:
+        db = SessionLocal()
+        stmt = text("""
+            SELECT id, title, entries, log_date, tags, mood, created_at, updated_at
+            FROM daily_log
+            WHERE log_date = :log_date
+            LIMIT 1
+        """)
+        result = db.execute(stmt, {"log_date": parsed_date}).fetchone()
+
+        if not result:
+            return None, 404, {"error": f"No log found for date {date}"}
+
+        log = {
+            "id": result.id,
+            "title": result.title,
+            "entries": result.entries,
+            "log_date": result.log_date.isoformat(),
+            "tags": result.tags.split(",") if result.tags else [],
+            "mood": result.mood,
+            "created_at": result.created_at.isoformat(),
+            "updated_at": result.updated_at.isoformat()
+        }
+
+        return log, 200
+
+    except Exception as e:
+        return None, 500, {"error": str(e)}
+
+    finally:
+        db.close()
 
 
 def logs_date_delete(_date: str) -> tuple[None, int, dict[str, str]] | str:
