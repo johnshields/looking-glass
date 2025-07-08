@@ -1,42 +1,54 @@
-from datetime import date
+from datetime import date, datetime
+from typing import List, Optional
+import uuid
 
 
 class DailyLog:
-    """DailyLog model — manually cleaned from OpenAPI output"""
+    """DailyLog model — manually cleaned and updated for SQL schema"""
 
-    def __init__(self, _date: date = None, entries: str = None):
-        self.openapi_types = {
-            '_date': date,
-            'entries': str
-        }
-
-        self.attribute_map = {
-            '_date': 'date',
-            'entries': 'entries'
-        }
-
-        self.__date = _date
-        self._entries = entries
+    def __init__(
+        self,
+        id: Optional[str] = None,
+        title: Optional[str] = None,
+        entries: Optional[str] = None,
+        log_date: Optional[date] = None,
+        tags: Optional[List[str]] = None,
+        mood: Optional[str] = None,
+        created_at: Optional[datetime] = None,
+        updated_at: Optional[datetime] = None,
+    ):
+        self.id = id or str(uuid.uuid4())
+        self.title = title
+        self.entries = entries
+        self.log_date = log_date
+        self.tags = tags or []
+        self.mood = mood
+        self.created_at = created_at
+        self.updated_at = updated_at
 
     @classmethod
     def from_dict(cls, dikt) -> 'DailyLog':
         """Create DailyLog from dict"""
-        _date = dikt.get("date")
-        entries = dikt.get("entries")
-        return cls(_date=_date, entries=entries)
+        return cls(
+            id=dikt.get("id"),
+            title=dikt.get("title"),
+            entries=dikt.get("entries"),
+            log_date=dikt.get("log_date"),
+            tags=dikt.get("tags", []),
+            mood=dikt.get("mood"),
+            created_at=dikt.get("created_at"),
+            updated_at=dikt.get("updated_at"),
+        )
 
-    @property
-    def _date(self) -> date:
-        return self.__date
-
-    @_date.setter
-    def _date(self, _date: date):
-        self.__date = _date
-
-    @property
-    def entries(self) -> str:
-        return self._entries
-
-    @entries.setter
-    def entries(self, entries: str):
-        self._entries = entries
+    def to_dict(self) -> dict:
+        """Convert DailyLog to dictionary for JSON serialization"""
+        return {
+            "id": self.id,
+            "title": self.title,
+            "entries": self.entries,
+            "log_date": self.log_date,
+            "tags": self.tags,
+            "mood": self.mood,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+        }
