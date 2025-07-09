@@ -6,16 +6,12 @@ from datetime import datetime
 from app.openapi_server import encoder
 from app.database.db import engine
 
-def main():
-    try:
-        with engine.connect() as conn:
-            print("Successfully connected to MySQL")
-    except Exception as e:
-        print("MySQL connection failed:", e)
-
+def create_app() -> connexion.App:
+    """Initialize and configure the API application."""
     app = connexion.App(__name__, specification_dir='openapi_server/openapi')
     app.app.json_encoder = encoder.JSONEncoder
 
+    # Health check endpoint
     @app.app.route("/")
     def root():
         return jsonify({
@@ -25,19 +21,31 @@ def main():
             "type": "about:blank"
         }), 200
 
+    # API metadata endpoint
     @app.app.route("/api/")
     def api_info():
         return jsonify({
-            "name": "Looking Glass API",
-            "version": "1.0.1",
+            "name": "LookingGlassAPI",
+            "version": "1.0.2",
             "description": "A minimalist daily log tracker. Create, read, update, and delete what you did each day.",
-            "date": datetime.utcnow(),
-            "status": "OK"
+            "status": "OK",
+            "date": datetime.utcnow()
         }), 200
 
+    # Add OpenAPI spec
     app.add_api('openapi.yaml', strict_validation=True, validate_responses=True)
-    app.run(port=8080)
+    return app
 
+def main():
+    """Run the Looking Glass API server."""
+    try:
+        with engine.connect() as conn:
+            print("Successfully connected to MySQL")
+    except Exception as e:
+        print("MySQL connection failed:", e)
+
+    app = create_app()
+    app.run(port=8080)
 
 if __name__ == '__main__':
     main()
