@@ -1,49 +1,52 @@
 # 🪞LookingGlass
 
-A minimalist daily log tracker API - reflect on what you did today.  
-Built with Python, FastAPI, and MySQL.
+A minimalist daily log tracker – reflect on what you did today.  
+Built with **Python + FastAPI** on the backend and a **React + TypeScript** frontend.
 
 ---
 
-## Development Environment
+## 🔧 Tech Stack
 
-### LookingGlassAPI
-- **Language** - Python 3.11+
-- **Framework** - FastAPI (via Connexion)
-- **Spec Format** - OpenAPI 3.0
-- **Database** - MySQL 8
-- **ORM** - SQLAlchemy Core
-- **Environment** - dotenv
+### Backend – LookingGlassAPI
+- **Language:** Python 3.11+
+- **Framework:** FastAPI (via Connexion)
+- **Spec Format:** OpenAPI 3.0
+- **Database:** MySQL 8
+- **ORM:** SQLAlchemy Core
+- **Environment:** dotenv
+
+### Frontend – React App
+- **Language:** TypeScript
+- **Framework:** React (Vite)
+- **Styling:** TailwindCSS
 
 ---
 
-## API Directory & File Structure
+## 📁 API Directory & File Structure
 
 ```
 LookingGlass/                       # Root project directory
-│   __main__.py                     # Application entry point
-│   .env                            # Environment variables for DB
-└───app/
-    ├───database/
-    │   └── db.py                   # SQLAlchemy session & engine setup
-    ├───openapi_server/
-    │   ├── controllers/            # Route logic (CRUD operations)
-    │   ├── models/                 # OpenAPI models
-    │   └── openapi/openapi.yaml    # API schema (OpenAPI 3.0)
-    └─────────────────────
+│   main.py                         # API entry point
+│   .env                            # MySQL credentials
+├───app/
+│   ├───database/
+│   │   └── db.py                   # SQLAlchemy engine + session
+│   ├───openapi_server/
+│   │   ├── controllers/            # CRUD logic
+│   │   ├── models/                 # Data models
+│   │   └── openapi/openapi.yaml   # OpenAPI schema
+└───react-app/                      # Frontend source (Vite + React)
+    ├── public/
+    ├── src/
+    │   ├── types.ts                # Shared types
+    │   └── App.tsx                 # Main app
 ```
 
 ---
 
-## How to Run
+## 🚀 How to Run the Project
 
-### Requirements
-
-- [Git](https://git-scm.com/downloads)
-- [Python 3.11+](https://www.python.org/downloads/)
-- [MySQL 8](https://dev.mysql.com/downloads/)
-
-### 1. Clone & Set Up Environment
+### 1. Clone & Set Up Backend
 
 ```bash
 git clone https://github.com/johnshields/LookingGlass
@@ -53,13 +56,13 @@ cd LookingGlass
 python -m venv venv
 source venv/bin/activate    # or venv\Scripts\activate on Windows
 
-# Install dependencies
+# Install backend dependencies
 pip install -r requirements.txt
 ```
 
 ### 2. Set Up MySQL
 
-Ensure you have a `.env` file in the project root with the following:
+Ensure your `.env` file in the root contains:
 
 ```env
 MYSQL_USER=root
@@ -69,19 +72,38 @@ MYSQL_PORT=3306
 MYSQL_DB=lookingglass_db
 ```
 
-Create the database manually with SQL [script](sql/looking_glass_db.sql).
-
----
-
-### 3. Run the API
+Then create the database manually using the provided SQL script:
 
 ```bash
-python main.py
+mysql -u root -p < sql/looking_glass_db.sql
 ```
-
-- API Base URL: `http://localhost:8080`
-- Swagger UI: `http://localhost:8080/ui`
-- Health check: `GET /` or `GET /api/`
 
 ---
 
+### 3. Run Backend API
+
+```bash
+python -m app
+```
+
+- **Base URL:** `http://localhost:8080`
+- **Docs:** `http://localhost:8080/ui`
+- **Health Check:** `GET /api/`
+
+---
+
+### 4. Run Frontend
+
+```bash
+cd frontend
+
+# Install frontend dependencies
+npm install
+
+# Start Vite dev server
+npm run dev
+```
+
+Frontend will be available at **http://localhost:5174**
+
+---
