@@ -1,7 +1,7 @@
 ﻿-- Drop and recreate the database
-DROP DATABASE IF EXISTS looking_glass;
-CREATE DATABASE looking_glass DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_general_ci;
-USE looking_glass;
+DROP DATABASE IF EXISTS lookingglass_db;
+CREATE DATABASE lookingglass_db DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_general_ci;
+USE lookingglass_db;
 
 -- Create the daily_log table
 CREATE TABLE IF NOT EXISTS daily_log (
