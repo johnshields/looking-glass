@@ -1,14 +1,17 @@
+import json
 import connexion
+from datetime import date
 from typing import Dict, Tuple, Union
-from datetime import datetime
 from app.database.db import SessionLocal
 from sqlalchemy import text
+from uuid import UUID
 
 from app.openapi_server.models.daily_log import DailyLog  # noqa: E501
 
 
 def logs_get() -> str:
     """Get all logs"""
+
     try:
         db = SessionLocal()
         result = db.execute(
@@ -36,25 +39,26 @@ def logs_get() -> str:
         db.close()
 
 
-def logs_date_get(date: str):
-    """Get log by date"""
+def logs_id_get(id: str):
+    """Get log by ID"""
+
     try:
-        parsed_date = datetime.strptime(date, "%Y-%m-%d").date()
+        UUID(id, version=4)
     except ValueError:
-        return None, 400, {"error": "Invalid date format, expected YYYY-MM-DD"}
+        return None, 400, {"error": "Invalid UUID format for ID"}
 
     try:
         db = SessionLocal()
         stmt = text("""
             SELECT id, title, entries, log_date, tags, mood, created_at, updated_at
             FROM daily_log
-            WHERE log_date = :log_date
+            WHERE id = :id
             LIMIT 1
         """)
-        result = db.execute(stmt, {"log_date": parsed_date}).fetchone()
+        result = db.execute(stmt, {"id": id}).fetchone()
 
         if not result:
-            return None, 404, {"error": f"No log found for date {date}"}
+            return None, 404, {"error": f"No log found for date {id}"}
 
         log = {
             "id": result.id,
@@ -76,23 +80,24 @@ def logs_date_get(date: str):
         db.close()
 
 
-def logs_date_delete(date: str) -> tuple[None, int, dict[str, str]] | str:
-    """Delete log by date"""
+def logs_id_delete(id: str) -> tuple[None, int, dict[str, str]] | str:
+    """Delete log by ID"""
+
     try:
-        parsed_date = datetime.strptime(date, "%Y-%m-%d").date()
+        UUID(id, version=4)
     except ValueError:
-        return None, 400, {"error": "Invalid date format, expected YYYY-MM-DD"}
+        return None, 400, {"error": "Invalid UUID format for ID"}
 
     try:
         db = SessionLocal()
-        stmt = text("DELETE FROM daily_log WHERE log_date = :log_date")
-        result = db.execute(stmt, {"log_date": parsed_date})
+        stmt = text("DELETE FROM daily_log WHERE id = :id")
+        result = db.execute(stmt, {"id": id})
         db.commit()
 
         if result.rowcount == 0:
-            return None, 404, {"error": f"No log found for date {date}"}
+            return None, 404, {"error": f"No log found for with ID {id}"}
 
-        return 204
+        return None, 204, {"message": f"Log {id} delete successfully"}
 
     except Exception as e:
         return None, 500, {"error": str(e)}
@@ -101,27 +106,60 @@ def logs_date_delete(date: str) -> tuple[None, int, dict[str, str]] | str:
         db.close()
 
 
-def logs_date_put(_date: str, body=None) -> tuple[None, int, dict[str, str]] | str:
-    """Update log by date
+def logs_id_put(id: str, body=None) -> tuple[None, int, dict[str, str]] | str:
+    """Update log by ID"""
 
-    :param _date: The date of the log to update
-    :type _date: str
-    :param body: The updated log data
-    :type body: dict | bytes
-    :rtype: Union[None, Tuple[None, int], Tuple[None, int, Dict[str, str]]]
-    """
     try:
-        parsed_date = datetime.strptime(_date, "%Y-%m-%d").date()
-    except ValueError:
-        return None, 400, {"error": "Invalid date format, expected YYYY-MM-DD"}
+        uuid_obj = UUID(id)
+    except ValueError as e:
+        return None, 400, {"error": f"Invalid UUID format for ID: {id}"}
 
-    if connexion.request.is_json:
-        daily_log = DailyLog.from_dict(connexion.request.get_json())  # noqa: E501
-    else:
+    if not connexion.request.is_json:
         return None, 400, {"error": "Request body must be JSON"}
 
-    # TODO: implement update logic
-    return 'do some magic!'
+    try:
+        data = connexion.request.get_json()
+        db = SessionLocal()
+
+        print(f"Looking up log with ID: {uuid_obj}")
+
+        result = db.execute(
+            text("SELECT id FROM daily_log WHERE id = :id"),
+            {"id": str(uuid_obj)}
+        ).fetchone()
+
+        if not result:
+            return None, 404, {"error": f"No log found with ID {id}"}
+
+        db.execute(
+            text("""
+                UPDATE daily_log
+                SET title = :title,
+                    entries = :entries,
+                    log_date = :log_date,
+                    tags = :tags,
+                    mood = :mood,
+                    updated_at = NOW()
+                WHERE id = :id
+            """),
+            {
+                "id": str(uuid_obj),
+                "title": data.get("title", ""),
+                "entries": data.get("entries", ""),
+                "log_date": data.get("log_date", date.today().isoformat()),
+                "tags": json.dumps(data.get("tags", [])),
+                "mood": data.get("mood", "")
+            }
+        )
+
+        db.commit()
+        return None, 204, {"message": f"Log {id} updated successfully"}
+
+    except Exception as e:
+        return None, 500, {"error": str(e)}
+
+    finally:
+        db.close()
 
 
 def logs_post(body=None) -> tuple[None, int, dict[str, str]] | str:

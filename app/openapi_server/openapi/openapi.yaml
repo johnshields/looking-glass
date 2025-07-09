@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: Looking Glass API
-  version: 1.0.1
+  version: 1.0.2
 servers:
   - url: /
 paths:
@@ -26,20 +26,20 @@ paths:
         "201":
           description: Log created
 
-  /api/logs/{date}:
+  /api/logs/{id}:
     get:
-      operationId: logs_date_get
-      summary: Get log by date
+      operationId: logs_id_get
+      summary: Get log by ID
       x-openapi-router-controller: app.openapi_server.controllers.log_controller
       parameters:
         - in: path
-          name: date
+          name: id
           required: true
           explode: false
           style: simple
           schema:
             type: string
-            format: date
+            format: uuid
       responses:
         "200":
           description: Log found
@@ -47,43 +47,51 @@ paths:
           description: Not found
 
     put:
-      operationId: logs_date_put
-      summary: Update log by date
+      operationId: logs_id_put
+      summary: Update log by ID
       x-openapi-router-controller: app.openapi_server.controllers.log_controller
       parameters:
         - in: path
-          name: date
+          name: id
           required: true
           explode: false
           style: simple
           schema:
             type: string
-            format: date
+            format: uuid
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DailyLog"
+              $ref: "#/components/schemas/UpdateLog"
       responses:
-        "200":
+        "204":
           description: Log updated
+        "400":
+          description: Invalid UUID
+        "404":
+          description: Log not found
 
     delete:
-      operationId: logs_date_delete
-      summary: Delete log by date
+      operationId: logs_id_delete
+      summary: Delete log by ID
       x-openapi-router-controller: app.openapi_server.controllers.log_controller
       parameters:
         - in: path
-          name: date
+          name: id
           required: true
           explode: false
           style: simple
           schema:
             type: string
-            format: date
+            format: uuid
       responses:
         "204":
-          description: Deleted
+          description: Log deleted
+        "400":
+          description: Invalid UUID
+        "404":
+          description: Log not found
 
 components:
   schemas:
@@ -121,7 +129,25 @@ components:
         title: "Monday"
         entries: "• Wrote FastAPI router\n• Cleaned controllers"
         log_date: "2025-07-08"
-        tags: ["work", "api", "python"]
+        tags: [ "work", "api", "python" ]
         mood: "productive"
         created_at: "2025-07-08T08:00:00Z"
         updated_at: "2025-07-08T08:30:00Z"
+
+    UpdateLog:
+      title: UpdateLog
+      type: object
+      properties:
+        title:
+          type: string
+        entries:
+          type: string
+        log_date:
+          type: string
+          format: date
+        tags:
+          type: array
+          items:
+            type: string
+        mood:
+          type: string

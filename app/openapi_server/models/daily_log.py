@@ -7,15 +7,15 @@ class DailyLog:
     """DailyLog model — manually cleaned and updated for SQL schema"""
 
     def __init__(
-        self,
-        id: Optional[str] = None,
-        title: Optional[str] = None,
-        entries: Optional[str] = None,
-        log_date: Optional[date] = None,
-        tags: Optional[List[str]] = None,
-        mood: Optional[str] = None,
-        created_at: Optional[datetime] = None,
-        updated_at: Optional[datetime] = None,
+            self,
+            id: Optional[str] = None,
+            title: Optional[str] = None,
+            entries: Optional[str] = None,
+            log_date: Optional[date] = None,
+            tags: Optional[List[str]] = None,
+            mood: Optional[str] = None,
+            created_at: Optional[datetime] = None,
+            updated_at: Optional[datetime] = None,
     ):
         self.id = id or str(uuid.uuid4())
         self.title = title
@@ -54,3 +54,29 @@ class DailyLog:
         }
 
 
+class UpdateLog:
+    """UpdateLog model (for PUT requests) — does NOT include ID or timestamps"""
+
+    def __init__(
+            self,
+            title: Optional[str] = None,
+            entries: Optional[str] = None,
+            log_date: Optional[date] = None,
+            tags: Optional[List[str]] = None,
+            mood: Optional[str] = None,
+    ):
+        self.title = title
+        self.entries = entries
+        self.log_date = log_date
+        self.tags = tags or []
+        self.mood = mood
+
+    @classmethod
+    def from_dict(cls, dikt) -> 'UpdateLog':
+        return cls(
+            title=dikt.get("title"),
+            entries=dikt.get("entries"),
+            log_date=dikt.get("log_date"),
+            tags=dikt.get("tags", []),
+            mood=dikt.get("mood"),
+        )
