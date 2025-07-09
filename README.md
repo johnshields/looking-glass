@@ -28,14 +28,14 @@ Built with **Python + FastAPI** on the backend and a **React + TypeScript** fron
 LookingGlass/                       # Root project directory
 │   main.py                         # API entry point
 │   .env                            # MySQL credentials
-├───app/
+├───backend/
 │   ├───database/
 │   │   └── db.py                   # SQLAlchemy engine + session
 │   ├───openapi_server/
 │   │   ├── controllers/            # CRUD logic
 │   │   ├── models/                 # Data models
 │   │   └── openapi/openapi.yaml   # OpenAPI schema
-└───react-app/                      # Frontend source (Vite + React)
+└───frontend/                      # Frontend source (Vite + React)
     ├── public/
     ├── src/
     │   ├── types.ts                # Shared types
@@ -80,30 +80,17 @@ mysql -u root -p < sql/looking_glass_db.sql
 
 ---
 
-### 3. Run Backend API
+### 3. Run LookingGlass App
+
+Run it from PowerShell/Command Prompt:
 
 ```bash
-python -m backend
+.\start.bat
 ```
 
 - **Base URL:** `http://localhost:8080`
 - **Docs:** `http://localhost:8080/ui`
 - **Health Check:** `GET /api/`
-
----
-
-### 4. Run Frontend
-
-```bash
-cd frontend
-
-# Install frontend dependencies
-npm install
-
-# Start Vite dev server
-npm run dev
-```
-
-Frontend will be available at **http://localhost:5174**
+- Frontend will be available at **http://localhost:5174**
 
 ---
