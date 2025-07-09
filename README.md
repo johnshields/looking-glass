@@ -40,6 +40,7 @@ LookingGlass/                       # Root project directory
     ├── src/
     │   ├── types.ts                # Shared types
     │   └── App.tsx                 # Main app
+    └───────────────── 
 ```
 
 ---
