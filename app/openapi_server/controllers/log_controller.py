@@ -76,20 +76,29 @@ def logs_date_get(date: str):
         db.close()
 
 
-def logs_date_delete(_date: str) -> tuple[None, int, dict[str, str]] | str:
-    """Delete log by date
-
-    :param _date: The date of the log to delete
-    :type _date: str
-    :rtype: Union[None, Tuple[None, int], Tuple[None, int, Dict[str, str]]]
-    """
+def logs_date_delete(date: str) -> tuple[None, int, dict[str, str]] | str:
+    """Delete log by date"""
     try:
-        parsed_date = datetime.strptime(_date, "%Y-%m-%d").date()
+        parsed_date = datetime.strptime(date, "%Y-%m-%d").date()
     except ValueError:
         return None, 400, {"error": "Invalid date format, expected YYYY-MM-DD"}
 
-    # TODO: implement deletion logic
-    return 'do some magic!'
+    try:
+        db = SessionLocal()
+        stmt = text("DELETE FROM daily_log WHERE log_date = :log_date")
+        result = db.execute(stmt, {"log_date": parsed_date})
+        db.commit()
+
+        if result.rowcount == 0:
+            return None, 404, {"error": f"No log found for date {date}"}
+
+        return 204
+
+    except Exception as e:
+        return None, 500, {"error": str(e)}
+
+    finally:
+        db.close()
 
 
 def logs_date_put(_date: str, body=None) -> tuple[None, int, dict[str, str]] | str:
