@@ -9,6 +9,22 @@ from uuid import UUID
 from app.openapi_server.models.daily_log import DailyLog  # noqa: E501
 
 
+def logs_post(body=None) -> tuple[None, int, dict[str, str]] | str:
+    """Create a new daily log
+
+    :param body: The new log to create
+    :type body: dict | bytes
+    :rtype: Union[None, Tuple[None, int], Tuple[None, int, Dict[str, str]]]
+    """
+    if connexion.request.is_json:
+        daily_log = DailyLog.from_dict(connexion.request.get_json())  # noqa: E501
+    else:
+        return None, 400, {"error": "Request body must be JSON"}
+
+    # TODO: implement creation logic
+    return 'do some magic!'
+
+
 def logs_get() -> str:
     """Get all logs"""
 
@@ -80,32 +96,6 @@ def logs_id_get(id: str):
         db.close()
 
 
-def logs_id_delete(id: str) -> tuple[None, int, dict[str, str]] | str:
-    """Delete log by ID"""
-
-    try:
-        UUID(id, version=4)
-    except ValueError:
-        return None, 400, {"error": "Invalid UUID format for ID"}
-
-    try:
-        db = SessionLocal()
-        stmt = text("DELETE FROM daily_log WHERE id = :id")
-        result = db.execute(stmt, {"id": id})
-        db.commit()
-
-        if result.rowcount == 0:
-            return None, 404, {"error": f"No log found for with ID {id}"}
-
-        return None, 204, {"message": f"Log {id} delete successfully"}
-
-    except Exception as e:
-        return None, 500, {"error": str(e)}
-
-    finally:
-        db.close()
-
-
 def logs_id_put(id: str, body=None) -> tuple[None, int, dict[str, str]] | str:
     """Update log by ID"""
 
@@ -162,17 +152,27 @@ def logs_id_put(id: str, body=None) -> tuple[None, int, dict[str, str]] | str:
         db.close()
 
 
-def logs_post(body=None) -> tuple[None, int, dict[str, str]] | str:
-    """Create a new daily log
+def logs_id_delete(id: str) -> tuple[None, int, dict[str, str]] | str:
+    """Delete log by ID"""
 
-    :param body: The new log to create
-    :type body: dict | bytes
-    :rtype: Union[None, Tuple[None, int], Tuple[None, int, Dict[str, str]]]
-    """
-    if connexion.request.is_json:
-        daily_log = DailyLog.from_dict(connexion.request.get_json())  # noqa: E501
-    else:
-        return None, 400, {"error": "Request body must be JSON"}
+    try:
+        UUID(id, version=4)
+    except ValueError:
+        return None, 400, {"error": "Invalid UUID format for ID"}
 
-    # TODO: implement creation logic
-    return 'do some magic!'
+    try:
+        db = SessionLocal()
+        stmt = text("DELETE FROM daily_log WHERE id = :id")
+        result = db.execute(stmt, {"id": id})
+        db.commit()
+
+        if result.rowcount == 0:
+            return None, 404, {"error": f"No log found for with ID {id}"}
+
+        return None, 204, {"message": f"Log {id} delete successfully"}
+
+    except Exception as e:
+        return None, 500, {"error": str(e)}
+
+    finally:
+        db.close()
