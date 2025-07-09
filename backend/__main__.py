@@ -4,8 +4,8 @@ import connexion
 from flask import jsonify
 from datetime import datetime
 from flask_cors import CORS
-from app.openapi_server import encoder
-from app.database.db import engine
+from backend.openapi_server import encoder
+from backend.database.db import engine
 
 
 def create_app() -> connexion.App:

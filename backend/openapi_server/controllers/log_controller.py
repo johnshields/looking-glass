@@ -3,7 +3,7 @@ import connexion
 from datetime import date
 from uuid import UUID, uuid4
 from sqlalchemy import text
-from app.database.db import SessionLocal
+from backend.database.db import SessionLocal
 
 
 # ----------------- Helper Functions ----------------- #

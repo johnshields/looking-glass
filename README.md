@@ -83,7 +83,7 @@ mysql -u root -p < sql/looking_glass_db.sql
 ### 3. Run Backend API
 
 ```bash
-python -m app
+python -m backend
 ```
 
 - **Base URL:** `http://localhost:8080`

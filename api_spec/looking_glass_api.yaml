@@ -9,14 +9,14 @@ paths:
     get:
       operationId: logs_get
       summary: Get all logs
-      x-openapi-router-controller: app.openapi_server.controllers.log_controller
+      x-openapi-router-controller: backend.openapi_server.controllers.log_controller
       responses:
         "200":
           description: List of daily logs
     post:
       operationId: logs_post
       summary: Create a new daily log
-      x-openapi-router-controller: app.openapi_server.controllers.log_controller
+      x-openapi-router-controller: backend.openapi_server.controllers.log_controller
       requestBody:
         content:
           application/json:
@@ -30,7 +30,7 @@ paths:
     get:
       operationId: logs_id_get
       summary: Get log by ID
-      x-openapi-router-controller: app.openapi_server.controllers.log_controller
+      x-openapi-router-controller: backend.openapi_server.controllers.log_controller
       parameters:
         - in: path
           name: id
@@ -49,7 +49,7 @@ paths:
     put:
       operationId: logs_id_put
       summary: Update log by ID
-      x-openapi-router-controller: app.openapi_server.controllers.log_controller
+      x-openapi-router-controller: backend.openapi_server.controllers.log_controller
       parameters:
         - in: path
           name: id
@@ -75,7 +75,7 @@ paths:
     delete:
       operationId: logs_id_delete
       summary: Delete log by ID
-      x-openapi-router-controller: app.openapi_server.controllers.log_controller
+      x-openapi-router-controller: backend.openapi_server.controllers.log_controller
       parameters:
         - in: path
           name: id

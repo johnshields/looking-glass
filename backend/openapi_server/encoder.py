@@ -1,5 +1,5 @@
 from connexion.apps.flask_app import FlaskJSONEncoder
-from app.openapi_server.models.daily_log import DailyLog as Model
+from backend.openapi_server.models.daily_log import DailyLog as Model
 
 
 class JSONEncoder(FlaskJSONEncoder):

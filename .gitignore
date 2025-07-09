@@ -73,7 +73,7 @@ out/
 .idea/
 
 # Secret files (optional, depending on usage)
-app/.env
+backend/.env
 .env.*
 
 # Frontend - Node & Vite
