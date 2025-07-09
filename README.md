@@ -97,3 +97,5 @@ Run it from PowerShell/Command Prompt:
 - Frontend will be available at **http://localhost:5174**
 
 ---
+
+MIT License © 2025 John Shields
