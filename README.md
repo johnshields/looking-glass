@@ -1,4 +1,4 @@
-# 🪞looking_glass.py
+# 🪞LookingGlass
 
 ### A minimalist time reflection API
 Track what you did today. For when the day disappears and you want to know where it went.
