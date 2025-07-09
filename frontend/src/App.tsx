@@ -179,7 +179,13 @@ export default function App() {
           {logs.map((log) => (
             <div key={log.id} className="log-window">
               <div className="log-header">
-                <span className="log-title">{log.title}</span>
+                <span className="log-title">
+                {log.title}&nbsp;-&nbsp;
+                {new Date(log.log_date).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                  })}{" "}
+                </span>
                 <div className="log-controls">
                   <span
                     className="dot blue cursor-pointer"
