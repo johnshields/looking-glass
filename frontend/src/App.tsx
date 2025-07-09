@@ -16,40 +16,46 @@ interface LogEntry {
 export default function App() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
 
-    useEffect(() => {
-      const fetchLogs = async () => {
-        try {
-          const response = await fetch('http://127.0.0.1:8080/api/logs');
-          if (!response.ok) throw new Error('Failed to fetch logs');
-          const data: LogEntry[] = await response.json();
-          setLogs(data);
-        } catch (error) {
-          console.error('Error fetching logs:', error);
-        }
-      };
+  useEffect(() => {
+    const fetchLogs = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:8080/api/logs');
+        if (!response.ok) throw new Error('Failed to fetch logs');
+        const data: LogEntry[] = await response.json();
+        setLogs(data);
+      } catch (error) {
+        console.error('Error fetching logs:', error);
+      }
+    };
 
-      fetchLogs();
-    }, []);
-
+    fetchLogs();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-zinc-900 text-white font-sans">
       {/* Header */}
-      <header className="w-full max-w-7xl flex justify-between items-center px-6 py-4 border-b border-zinc-700">
-        <h1 className="text-3xl font-extrabold tracking-wide">LookingGlass</h1>
+      <header className="app-container border-b border-zinc-700 py-4 flex justify-between items-center">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-extrabold tracking-wide">LookingGlass</h1>
+          <p className="text-sm text-gray-300">
+            For tracking what you did today when the day disappears and you want to know where it went.
+          </p>
+        </div>
       </header>
 
       {/* Main Content */}
-      <main className="w-full max-w-7xl px-4 py-8">
-        <div className="flex justify-between items-center mb-6 w-full">
-        <h2 className="text-2xl font-bold">All Logs</h2>
-        <button id="newEntryButton"
-        className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded transition">
-        New Entry
-        </button>
-    </div>
+      <main className="app-container py-8">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">All Logs</h2>
+          <button
+            id="newEntryButton"
+            className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded transition"
+          >
+            New Entry
+          </button>
+        </div>
 
-        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <div className="log-grid">
           {logs.map((log) => (
             <div key={log.id} className="log-window">
               <div className="log-header">
@@ -61,8 +67,12 @@ export default function App() {
               </div>
               <div className="log-body">
                 <p className="text-sm text-gray-400 mb-2">
-                  {new Date(log.log_date).toLocaleDateString()} —{' '}
-                  <span className="capitalize">{log.mood}</span>
+                  {new Date(log.log_date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}{' '}
+                  — <span className="capitalize">{log.mood}</span>
                 </p>
                 <p className="mb-2 whitespace-pre-line">{log.entries}</p>
                 <p className="text-xs text-blue-300">Tags: {log.tags.join(', ')}</p>

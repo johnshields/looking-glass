@@ -20,6 +20,20 @@ body {
   color: black;
 }
 
+/* App.css */
+.app-container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+}
+
+.log-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
 /* General Layout Utility */
 * {
   box-sizing: border-box;
