@@ -84,7 +84,9 @@ export default function App() {
 
   // Delete a log entry
   const handleDelete = async (id: string) => {
-    const confirmed = window.confirm("Are you sure you want to delete this entry?");
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this entry?"
+    );
     if (!confirmed) return;
 
     try {
@@ -105,7 +107,10 @@ export default function App() {
     const updatedTitle = prompt("Update title:", log.title);
     const updatedEntries = prompt("Update entry text:", log.entries);
     const updatedMood = prompt("Update mood:", log.mood);
-    const updatedTagsInput = prompt("Update tags (comma-separated):", log.tags.join(", "));
+    const updatedTagsInput = prompt(
+      "Update tags (comma-separated):",
+      log.tags.join(", ")
+    );
     const updatedTags = updatedTagsInput
       ? updatedTagsInput.split(",").map((tag) => tag.trim())
       : [];
@@ -141,9 +146,12 @@ export default function App() {
     <div className="min-h-screen flex flex-col items-center bg-zinc-900 text-white font-sans">
       <header className="app-container border-b border-zinc-700 py-4 flex justify-between items-center">
         <div className="space-y-2">
-          <h1 className="text-3xl font-extrabold tracking-wide">🪞LookingGlass</h1>
+          <h1 className="text-3xl font-extrabold tracking-wide">
+            🪞LookingGlass
+          </h1>
           <p className="text-sm text-gray-300">
-            For tracking what you did today when the day disappears and you want to know where it went.
+            For tracking what you did today when the day disappears and you want
+            to know where it went.
           </p>
         </div>
       </header>
@@ -151,7 +159,8 @@ export default function App() {
       <main className="app-container py-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">All Logs</h2>
-          <button id="newEntryButton"
+          <button
+            id="newEntryButton"
             onClick={handleNewEntry}
             className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded transition"
           >
@@ -187,17 +196,20 @@ export default function App() {
                   })}{" "}
                   — <span className="capitalize">{log.mood}</span>
                 </p>
-                <p className="mb-2 whitespace-pre-line">{log.entries}</p>
-                <div className="flex flex-wrap gap-1 text-xs mt-2">
-                  {log.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="bg-blue-800 text-blue-100 px-2 py-1 rounded-full"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+                <p className="mb-2 whitespace-pre-line">
+                  {log.entries.replace(/(?!^)-/g, "\n-")}
+                </p>
+
+                <p className="text-xs text-blue-300">
+                  Tags:{" "}
+                  {log.tags
+                    .toString()
+                    .replace(/^\[|\]$/g, "")
+                    .replace(/"/g, "")
+                    .split(",")
+                    .map((tag: string, index: number) => `[${tag.trim()}]`)
+                    .join(" ")}
+                </p>
               </div>
             </div>
           ))}

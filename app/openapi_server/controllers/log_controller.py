@@ -59,7 +59,7 @@ def logs_get():
     db = SessionLocal()
     try:
         result = db.execute(text("""
-            SELECT id, title, entries, log_date, tags, mood, created_at, updated_at FROM daily_log
+            SELECT id, title, entries, log_date, tags, mood, created_at, updated_at FROM daily_log ORDER BY log_date DESC;
         """))
 
         logs = [{
