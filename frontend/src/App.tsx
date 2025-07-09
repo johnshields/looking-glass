@@ -16,20 +16,21 @@ interface LogEntry {
 export default function App() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
 
-  useEffect(() => {
-    const simulatedResponse: LogEntry = {
-      created_at: '2025-07-09T13:48:42',
-      entries: '- Worked on the API setup today.',
-      id: 'f12a234c-d45b-11ec-9d64-0242ac120002',
-      log_date: '2025-07-07',
-      mood: 'productive',
-      tags: ['work', 'api', 'python'],
-      title: 'Monday Entry',
-      updated_at: '2025-07-09T13:48:42',
-    };
+    useEffect(() => {
+      const fetchLogs = async () => {
+        try {
+          const response = await fetch('http://127.0.0.1:8080/api/logs');
+          if (!response.ok) throw new Error('Failed to fetch logs');
+          const data: LogEntry[] = await response.json();
+          setLogs(data);
+        } catch (error) {
+          console.error('Error fetching logs:', error);
+        }
+      };
 
-    setLogs([simulatedResponse]);
-  }, []);
+      fetchLogs();
+    }, []);
+
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-zinc-900 text-white font-sans">

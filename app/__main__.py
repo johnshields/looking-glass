@@ -3,13 +3,17 @@
 import connexion
 from flask import jsonify
 from datetime import datetime
+from flask_cors import CORS
 from app.openapi_server import encoder
 from app.database.db import engine
+
 
 def create_app() -> connexion.App:
     """Initialize and configure the API application."""
     app = connexion.App(__name__, specification_dir='openapi_server/openapi')
     app.app.json_encoder = encoder.JSONEncoder
+
+    CORS(app.app, resources={r"/*": {"origins": "*"}})
 
     # Health check endpoint
     @app.app.route("/")
@@ -36,6 +40,7 @@ def create_app() -> connexion.App:
     app.add_api('openapi.yaml', strict_validation=True, validate_responses=True)
     return app
 
+
 def main():
     """Run the Looking Glass API server."""
     try:
@@ -46,6 +51,7 @@ def main():
 
     app = create_app()
     app.run(port=8080)
+
 
 if __name__ == '__main__':
     main()
