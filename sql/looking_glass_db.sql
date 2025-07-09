@@ -20,16 +20,16 @@ INSERT INTO daily_log (id, title, entries, log_date, tags, mood)
 VALUES
 (
     'f12a234c-d45b-11ec-9d64-0242ac120002',
-    'Monday',
-    'Worked on the API setup today.',
+    'Monday Entry',
+    '- Worked on the API setup today.',
     '2025-07-07',
     '["work", "api", "python"]',
     'productive'
 ),
 (
     'a02c8b7e-d45c-11ec-9d64-0242ac120002',
-    'Tuesday',
-    'Connected API to MySQL.',
+    'Tuesday Entry',
+    '- Connected API to MySQL.',
     '2025-07-08',
     '["learning", "sql"]',
     'chill'

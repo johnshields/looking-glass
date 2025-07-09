@@ -1,28 +1,48 @@
 import json
 import connexion
 from datetime import date
-from typing import Dict, Tuple, Union
 from app.database.db import SessionLocal
 from sqlalchemy import text
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from app.openapi_server.models.daily_log import DailyLog  # noqa: E501
 
 
 def logs_post(body=None) -> tuple[None, int, dict[str, str]] | str:
-    """Create a new daily log
+    """Create a new daily log"""
 
-    :param body: The new log to create
-    :type body: dict | bytes
-    :rtype: Union[None, Tuple[None, int], Tuple[None, int, Dict[str, str]]]
-    """
-    if connexion.request.is_json:
-        daily_log = DailyLog.from_dict(connexion.request.get_json())  # noqa: E501
-    else:
+    if not connexion.request.is_json:
         return None, 400, {"error": "Request body must be JSON"}
 
-    # TODO: implement creation logic
-    return 'do some magic!'
+    try:
+        data = connexion.request.get_json()
+
+        db = SessionLocal()
+        new_id = str(uuid4())
+
+        db.execute(
+            text("""
+                    INSERT INTO daily_log (id, title, entries, log_date, tags, mood, created_at, updated_at)
+                    VALUES (:id, :title, :entries, :log_date, :tags, :mood, NOW(), NOW())
+                """),
+            {
+                "id": new_id,
+                "title": data.get("title", ""),
+                "entries": data.get("entries", ""),
+                "log_date": data.get("log_date", date.today().isoformat()),
+                "tags": json.dumps(data.get("tags", [])),
+                "mood": data.get("mood", "")
+            }
+        )
+
+        db.commit()
+        return None, 201, {"message": f"Log {new_id} created successfully"}
+
+    except Exception as e:
+        return None, 500, {"error": str(e)}
+
+    finally:
+        db.close()
 
 
 def logs_get() -> str:
