@@ -16,6 +16,7 @@ interface LogEntry {
 export default function App() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
 
+  // Get all logs
   useEffect(() => {
     const fetchLogs = async () => {
       try {
@@ -31,6 +32,7 @@ export default function App() {
     fetchLogs();
   }, []);
 
+  // Create a new log
   const handleNewEntry = async () => {
     const title = prompt("Title for the log entry:");
     if (!title) return;
@@ -70,6 +72,28 @@ export default function App() {
     }
   };
 
+  // Delete a log
+  const handleDelete = async (id: string) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this entry?"
+    );
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch(`http://127.0.0.1:8080/api/logs/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) throw new Error("Failed to delete log");
+
+      // Remove the log from state
+      setLogs((prevLogs) => prevLogs.filter((log) => log.id !== id));
+    } catch (error) {
+      console.error("Error deleting log:", error);
+      alert("Failed to delete log. Try again.");
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center bg-zinc-900 text-white font-sans">
       {/* Header */}
@@ -105,7 +129,11 @@ export default function App() {
                 <span className="log-title">{log.title}</span>
                 <div className="log-controls">
                   <span className="dot blue" />
-                  <span className="dot red" />
+                  <span
+                    className="dot red cursor-pointer"
+                    title="Delete Entry"
+                    onClick={() => handleDelete(log.id)}
+                  />
                 </div>
               </div>
               <div className="log-body">
