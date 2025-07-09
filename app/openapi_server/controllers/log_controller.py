@@ -1,30 +1,42 @@
 import json
 import connexion
 from datetime import date
-from app.database.db import SessionLocal
-from sqlalchemy import text
 from uuid import UUID, uuid4
+from sqlalchemy import text
+from app.database.db import SessionLocal
 
-from app.openapi_server.models.daily_log import DailyLog  # noqa: E501
 
+# ----------------- Helper Functions ----------------- #
 
-def logs_post(body=None) -> tuple[None, int, dict[str, str]] | str:
-    """Create a new daily log"""
-
-    if not connexion.request.is_json:
-        return None, 400, {"error": "Request body must be JSON"}
-
+def _validate_uuid(id: str):
     try:
-        data = connexion.request.get_json()
+        return UUID(id, version=4)
+    except ValueError:
+        return None
 
-        db = SessionLocal()
+
+def _get_json_body():
+    if not connexion.request.is_json:
+        return None, {"error": "Request body must be JSON"}
+    return connexion.request.get_json(), None
+
+
+# ----------------- Routes ----------------- #
+
+def logs_post(body=None):
+    """Create a new daily log"""
+    data, error = _get_json_body()
+    if error:
+        return None, 400, error
+
+    db = SessionLocal()
+    try:
         new_id = str(uuid4())
-
         db.execute(
             text("""
-                    INSERT INTO daily_log (id, title, entries, log_date, tags, mood, created_at, updated_at)
-                    VALUES (:id, :title, :entries, :log_date, :tags, :mood, NOW(), NOW())
-                """),
+                INSERT INTO daily_log (id, title, entries, log_date, tags, mood, created_at, updated_at)
+                VALUES (:id, :title, :entries, :log_date, :tags, :mood, NOW(), NOW())
+            """),
             {
                 "id": new_id,
                 "title": data.get("title", ""),
@@ -34,67 +46,57 @@ def logs_post(body=None) -> tuple[None, int, dict[str, str]] | str:
                 "mood": data.get("mood", "")
             }
         )
-
         db.commit()
         return None, 201, {"message": f"Log {new_id} created successfully"}
-
     except Exception as e:
         return None, 500, {"error": str(e)}
-
     finally:
         db.close()
 
 
-def logs_get() -> str:
+def logs_get():
     """Get all logs"""
-
+    db = SessionLocal()
     try:
-        db = SessionLocal()
-        result = db.execute(
-            text("SELECT id, title, entries, log_date, tags, mood, created_at, updated_at FROM daily_log"))
-        logs = []
+        result = db.execute(text("""
+            SELECT id, title, entries, log_date, tags, mood, created_at, updated_at FROM daily_log
+        """))
 
-        for row in result.fetchall():
-            logs.append({
-                "id": row.id,
-                "title": row.title,
-                "entries": row.entries,
-                "date": row.log_date.isoformat() if row.log_date else None,
-                "tags": row.tags.split(",") if row.tags else [],
-                "mood": row.mood,
-                "created_at": row.created_at.isoformat(),
-                "updated_at": row.updated_at.isoformat()
-            })
+        logs = [{
+            "id": row.id,
+            "title": row.title,
+            "entries": row.entries,
+            "log_date": row.log_date.isoformat() if row.log_date else None,
+            "tags": row.tags.split(",") if row.tags else [],
+            "mood": row.mood,
+            "created_at": row.created_at.isoformat(),
+            "updated_at": row.updated_at.isoformat()
+        } for row in result.fetchall()]
 
         return logs, 200
-
     except Exception as e:
         return None, 500, {"error": str(e)}
-
     finally:
         db.close()
 
 
 def logs_id_get(id: str):
     """Get log by ID"""
-
-    try:
-        UUID(id, version=4)
-    except ValueError:
+    if not _validate_uuid(id):
         return None, 400, {"error": "Invalid UUID format for ID"}
 
+    db = SessionLocal()
     try:
-        db = SessionLocal()
-        stmt = text("""
-            SELECT id, title, entries, log_date, tags, mood, created_at, updated_at
-            FROM daily_log
-            WHERE id = :id
-            LIMIT 1
-        """)
-        result = db.execute(stmt, {"id": id}).fetchone()
+        result = db.execute(
+            text("""
+                SELECT id, title, entries, log_date, tags, mood, created_at, updated_at
+                FROM daily_log WHERE id = :id LIMIT 1
+            """),
+            {"id": id}
+        ).fetchone()
 
         if not result:
-            return None, 404, {"error": f"No log found for date {id}"}
+            return None, 404, {"error": f"No log found for ID {id}"}
 
         log = {
             "id": result.id,
@@ -108,37 +110,29 @@ def logs_id_get(id: str):
         }
 
         return log, 200
-
     except Exception as e:
         return None, 500, {"error": str(e)}
-
     finally:
         db.close()
 
 
-def logs_id_put(id: str, body=None) -> tuple[None, int, dict[str, str]] | str:
+def logs_id_put(id: str, body=None):
     """Update log by ID"""
-
-    try:
-        uuid_obj = UUID(id)
-    except ValueError as e:
+    if not _validate_uuid(id):
         return None, 400, {"error": f"Invalid UUID format for ID: {id}"}
 
-    if not connexion.request.is_json:
-        return None, 400, {"error": "Request body must be JSON"}
+    data, error = _get_json_body()
+    if error:
+        return None, 400, error
 
+    db = SessionLocal()
     try:
-        data = connexion.request.get_json()
-        db = SessionLocal()
-
-        print(f"Looking up log with ID: {uuid_obj}")
-
-        result = db.execute(
+        exists = db.execute(
             text("SELECT id FROM daily_log WHERE id = :id"),
-            {"id": str(uuid_obj)}
+            {"id": id}
         ).fetchone()
 
-        if not result:
+        if not exists:
             return None, 404, {"error": f"No log found with ID {id}"}
 
         db.execute(
@@ -153,7 +147,7 @@ def logs_id_put(id: str, body=None) -> tuple[None, int, dict[str, str]] | str:
                 WHERE id = :id
             """),
             {
-                "id": str(uuid_obj),
+                "id": id,
                 "title": data.get("title", ""),
                 "entries": data.get("entries", ""),
                 "log_date": data.get("log_date", date.today().isoformat()),
@@ -161,38 +155,32 @@ def logs_id_put(id: str, body=None) -> tuple[None, int, dict[str, str]] | str:
                 "mood": data.get("mood", "")
             }
         )
-
         db.commit()
         return None, 204, {"message": f"Log {id} updated successfully"}
-
     except Exception as e:
         return None, 500, {"error": str(e)}
-
     finally:
         db.close()
 
 
-def logs_id_delete(id: str) -> tuple[None, int, dict[str, str]] | str:
+def logs_id_delete(id: str):
     """Delete log by ID"""
-
-    try:
-        UUID(id, version=4)
-    except ValueError:
+    if not _validate_uuid(id):
         return None, 400, {"error": "Invalid UUID format for ID"}
 
+    db = SessionLocal()
     try:
-        db = SessionLocal()
-        stmt = text("DELETE FROM daily_log WHERE id = :id")
-        result = db.execute(stmt, {"id": id})
+        result = db.execute(
+            text("DELETE FROM daily_log WHERE id = :id"),
+            {"id": id}
+        )
         db.commit()
 
         if result.rowcount == 0:
-            return None, 404, {"error": f"No log found for with ID {id}"}
+            return None, 404, {"error": f"No log found with ID {id}"}
 
-        return None, 204, {"message": f"Log {id} delete successfully"}
-
+        return None, 204, {"message": f"Log {id} deleted successfully"}
     except Exception as e:
         return None, 500, {"error": str(e)}
-
     finally:
         db.close()
