@@ -82,37 +82,24 @@ export default function App() {
     }
   };
 
-  // Delete a log entry
-  const handleDelete = async (id: string) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this entry?"
-    );
-    if (!confirmed) return;
-
-    try {
-      const response = await fetch(`http://127.0.0.1:8080/api/logs/${id}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) throw new Error("Failed to delete log");
-
-      setLogs((prevLogs) => prevLogs.filter((log) => log.id !== id));
-    } catch {
-      alert("Failed to delete log. Try again.");
-    }
-  };
-
-  // Update a log entry
   const handleUpdateEntry = async (log: LogEntry) => {
     const updatedTitle = prompt("Update title:", log.title);
     const updatedEntries = prompt("Update entry text:", log.entries);
     const updatedMood = prompt("Update mood:", log.mood);
+
+    // Clean up tag display for prompt (remove brackets and quotes)
+    const cleanedTags = log.tags.toString().replace(/[\[\]"]/g, "");
+
     const updatedTagsInput = prompt(
       "Update tags (comma-separated):",
-      log.tags.join(", ")
+      cleanedTags
     );
+
     const updatedTags = updatedTagsInput
-      ? updatedTagsInput.split(",").map((tag) => tag.trim())
+      ? updatedTagsInput
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter((tag) => tag.length > 0)
       : [];
 
     if (!updatedTitle || !updatedEntries || !updatedMood) return;
@@ -139,6 +126,26 @@ export default function App() {
       );
     } catch {
       alert("Failed to update entry. Try again.");
+    }
+  };
+
+  // Delete a log entry
+  const handleDelete = async (id: string) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this entry?"
+    );
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch(`http://127.0.0.1:8080/api/logs/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) throw new Error("Failed to delete log");
+
+      setLogs((prevLogs) => prevLogs.filter((log) => log.id !== id));
+    } catch {
+      alert("Failed to delete log. Try again.");
     }
   };
 
