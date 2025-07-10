@@ -54,26 +54,18 @@ CREATE TABLE IF NOT EXISTS daily_log (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE = InnoDB;
 
--- Dummy data
+-- Dummy data --
 INSERT INTO daily_log (id, user_id, title, entries, log_date, tags, mood)
 VALUES
 (
     'f12a234c-d45b-11ec-9d64-0242ac120002',
     1,
-    'Monday Entry',
-    '- Worked on the LookingGlassAPI setup today.',
-    '2025-07-07',
-    '["work", "api", "python"]',
-    'productive'
-),
-(
-    'a02c8b7e-d45c-11ec-9d64-0242ac120002',
-    1,
-    'Tuesday Entry',
-    '- Connected LookingGlassAPI to MySQL.',
-    '2025-07-08',
-    '["learning", "sql"]',
-    'chill'
+    'Test Entry',
+    '- Tested SQL script.',
+    '2025-07-11',
+    '["test", "sql", "lookingglass"]',
+    'accomplished'
 );
+
 
 COMMIT;

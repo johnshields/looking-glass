@@ -40,6 +40,9 @@ def create_app() -> connexion.App:
     app.add_api('openapi.yaml', strict_validation=True, validate_responses=True)
     return app
 
+# Create the Connexion app
+connexion_app = create_app()
+app = connexion_app.app
 
 def main():
     """Run the Looking Glass API server."""
@@ -49,8 +52,7 @@ def main():
     except Exception as e:
         print("MySQL connection failed:", e)
 
-    app = create_app()
-    app.run(port=8080)
+    connexion_app.run(port=8080)
 
 
 if __name__ == '__main__':
