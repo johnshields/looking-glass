@@ -1,0 +1,55 @@
+﻿# API Design & Specification
+
+OpenAPI Specification
+https://swagger.io/specification/
+https://connexion.readthedocs.io/en/latest/
+
+# Python Frameworks
+
+FastAPI Documentation (initial exploration)
+https://fastapi.tiangolo.com/
+
+Flask Documentation (used in this project)
+https://flask.palletsprojects.com/en/latest/
+https://flask.palletsprojects.com/en/latest/tutorial/
+https://flask-cors.readthedocs.io/en/latest/
+
+# Pytest Unit Testing
+
+Pytest Documentation
+https://docs.pytest.org/en/stable/
+https://docs.pytest.org/en/stable/how-to/fixtures.html
+
+Flask Testing with Pytest
+https://flask.palletsprojects.com/en/latest/testing/
+https://testdriven.io/blog/flask-pytest/
+
+# SQL & SQLAlchemy
+
+SQLAlchemy Core (used for MySQL integration)
+https://docs.sqlalchemy.org/en/20/core/
+
+SQLAlchemy + Flask Patterns
+https://docs.sqlalchemy.org/en/20/orm/session_basics.html
+
+MySQL
+https://dev.mysql.com/doc/
+
+# Frontend: React + Vite + Tailwind
+
+React Docs
+https://react.dev/
+
+Vite Docs
+https://vitejs.dev/guide/
+
+Tailwind CSS Docs
+https://tailwindcss.com/docs
+
+# Dev Tools & Practices
+
+REST API Design Guidelines
+https://restfulapi.net/
+
+JSON Standards
+https://www.json.org/json-en.html
