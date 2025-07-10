@@ -1,6 +1,6 @@
 # 🪞LookingGlass
 
-A minimalist daily log tracker – reflect on what you did today.  
+A minimalist daily log tracker - reflect on what you did today.  
 Built with **Python + FastAPI** on the backend and a **React + TypeScript** frontend.
 
 ![image](https://github.com/user-attachments/assets/8c754399-f721-41bd-bfd2-e77527a7c465)
@@ -9,7 +9,7 @@ Built with **Python + FastAPI** on the backend and a **React + TypeScript** fron
 
 ## 🔧 Tech Stack
 
-### Backend – LookingGlassAPI
+### Backend - LookingGlassAPI
 - **Language:** Python 3.11+
 - **Framework:** FastAPI (via Connexion)
 - **Spec Format:** OpenAPI 3.0
@@ -17,7 +17,7 @@ Built with **Python + FastAPI** on the backend and a **React + TypeScript** fron
 - **ORM:** SQLAlchemy Core
 - **Environment:** dotenv
 
-### Frontend – React App
+### Frontend - React App
 - **Language:** TypeScript
 - **Framework:** React (Vite)
 - **Styling:** TailwindCSS
