@@ -61,7 +61,7 @@ VALUES
     'f12a234c-d45b-11ec-9d64-0242ac120002',
     1,
     'Test Entry',
-    '- Tested SQL script.',
+    '- Tested LookingGlass SQL script.',
     '2025-07-11',
     '["test", "sql", "lookingglass"]',
     'accomplished'

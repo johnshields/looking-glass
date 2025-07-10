@@ -9,6 +9,10 @@ from backend.database.db import SessionLocal
 # ----------------- Helper Functions ----------------- #
 
 def _validate_uuid(id: str):
+    """
+    Validates if a given string is a proper UUID (version 4).
+    Returns a UUID object or None if invalid.
+    """
     try:
         return UUID(id, version=4)
     except ValueError:
@@ -16,6 +20,10 @@ def _validate_uuid(id: str):
 
 
 def _get_json_body():
+    """
+    Safely parse and return JSON from the request body.
+    Returns (data, None) on success or (None, error) on failure.
+    """
     if not connexion.request.is_json:
         return None, {"error": "Request body must be JSON"}
     return connexion.request.get_json(), None
@@ -24,7 +32,10 @@ def _get_json_body():
 # ----------------- Routes ----------------- #
 
 def logs_post(body=None):
-    """Create a new daily log"""
+    """
+    Create a new daily log entry.
+    Expects title, entries, log_date, tags, and mood in the request body.
+    """
     data, error = _get_json_body()
     if error:
         return None, 400, error
@@ -55,11 +66,14 @@ def logs_post(body=None):
 
 
 def logs_get():
-    """Get all logs"""
+    """
+    Retrieve all logs sorted by log_date descending.
+    """
     db = SessionLocal()
     try:
         result = db.execute(text("""
-            SELECT id, title, entries, log_date, tags, mood, created_at, updated_at FROM daily_log ORDER BY log_date DESC;
+            SELECT id, title, entries, log_date, tags, mood, created_at, updated_at FROM daily_log 
+            ORDER BY log_date DESC;
         """))
 
         logs = [{
@@ -81,7 +95,9 @@ def logs_get():
 
 
 def logs_id_get(id: str):
-    """Get log by ID"""
+    """
+    Retrieve a single log entry by UUID.
+    """
     if not _validate_uuid(id):
         return None, 400, {"error": "Invalid UUID format for ID"}
 
@@ -117,7 +133,9 @@ def logs_id_get(id: str):
 
 
 def logs_id_put(id: str, body=None):
-    """Update log by ID"""
+    """
+    Update an existing log by ID.
+    """
     if not _validate_uuid(id):
         return None, 400, {"error": f"Invalid UUID format for ID: {id}"}
 
@@ -127,6 +145,7 @@ def logs_id_put(id: str, body=None):
 
     db = SessionLocal()
     try:
+        # Ensure the log exists before attempting an update
         exists = db.execute(
             text("SELECT id FROM daily_log WHERE id = :id"),
             {"id": id}
@@ -164,7 +183,9 @@ def logs_id_put(id: str, body=None):
 
 
 def logs_id_delete(id: str):
-    """Delete log by ID"""
+    """
+    Delete a log entry by UUID.
+    """
     if not _validate_uuid(id):
         return None, 400, {"error": "Invalid UUID format for ID"}
 

@@ -1,5 +1,4 @@
 ﻿import pytest
-import json
 from datetime import date
 from backend.__main__ import app
 
