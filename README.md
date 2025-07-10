@@ -78,7 +78,7 @@ MYSQL_DB=lookingglass_db
 Then create the database manually using the provided SQL script:
 
 ```bash
-mysql -u root -p < sql/looking_glass_db.sql
+mysql -u root -p < sql/lookingglass_db.sql
 ```
 
 ---
