@@ -1,71 +1,86 @@
 # 🪞LookingGlass
 
 A minimalist daily log tracker - reflect on what you did today.  
-Built with **Python + FastAPI** on the backend and a **React + TypeScript** frontend.
+Built with **Python + FastAPI**, **MySQL** and **React + TypeScript**.
 
 ![image](https://github.com/user-attachments/assets/8c754399-f721-41bd-bfd2-e77527a7c465)
 
 ---
 
-## 🔧 Tech Stack
+## 🧰 Development Environment
 
-### Backend - LookingGlassAPI
+### Backend
 - **Language:** Python 3.11+
 - **Framework:** FastAPI (via Connexion)
 - **Spec Format:** OpenAPI 3.0
 - **Database:** MySQL 8
 - **ORM:** SQLAlchemy Core
-- **Environment:** dotenv
 
-### Frontend - React App
+### Frontend
 - **Language:** TypeScript
 - **Framework:** React (Vite)
 - **Styling:** TailwindCSS
 
 ---
 
-## 📁 API Directory & File Structure
+## 📁 Directory Structure
 
 ```
-LookingGlass/                       # Root project directory
-│   main.py                         # API entry point
-│   .env                            # MySQL credentials
-├───backend/
-│   ├───database/
-│   │   └── db.py                   # SQLAlchemy engine + session
-│   ├───openapi_server/
-│   │   ├── controllers/            # CRUD logic
-│   │   ├── models/                 # Data models
-│   │   └── openapi/openapi.yaml   # OpenAPI schema
-└───frontend/                      # Frontend source (Vite + React)
-    ├── public/
-    ├── src/
-    │   ├── types.ts                # Shared types
-    │   └── App.tsx                 # Main app
-    └───────────────── 
+LookingGlass/
+├── .env
+├── main.py
+├── backend/
+│   ├── database/
+│   │   └── db.py
+│   ├── openapi_server/
+│   │   ├── controllers/
+│   │   ├── models/
+│   │   └── openapi/
+│   │       └── openapi.yaml
+├── frontend/
+│   ├── public/
+│   └── src/
+│       ├── types.ts
+│       └── App.tsx
+└─────────────────────────────
 ```
 
 ---
 
-## 🚀 How to Run the Project
+## 🚀 How to Run
 
-### 1. Clone & Set Up Backend
+### Requirements
+
+- [Git](https://git-scm.com/downloads)
+- [Python 3.11+](https://www.python.org/downloads/)
+- [MySQL](https://dev.mysql.com/downloads/)
+- [Node.js](https://nodejs.org/) (for frontend)
+
+---
+
+### ⚙️ Backend Setup
+
+1. Clone the repo:
 
 ```bash
-git clone https://github.com/johnshields/LookingGlass
+git clone https://github.com/johnshields/LookingGlass.git
 cd LookingGlass
+```
 
-# Create virtual environment
+2. Create and activate a virtual environment:
+
+```bash
 python -m venv venv
 source venv/bin/activate    # or venv\Scripts\activate on Windows
+```
 
-# Install backend dependencies
+3. Install dependencies:
+
+```bash
 pip install -r requirements.txt
 ```
 
-### 2. Set Up MySQL
-
-Ensure your `.env` file in the root contains:
+4. Configure environment variables in `.env`:
 
 ```env
 MYSQL_USER=root
@@ -75,7 +90,7 @@ MYSQL_PORT=3306
 MYSQL_DB=lookingglass_db
 ```
 
-Then create the database manually using the provided SQL script:
+5. Create database:
 
 ```bash
 mysql -u root -p < sql/lookingglass_db.sql
@@ -83,18 +98,18 @@ mysql -u root -p < sql/lookingglass_db.sql
 
 ---
 
-### 3. Run LookingGlass App
+### ▶️ Start the App
 
-Run it from PowerShell/Command Prompt:
+From PowerShell or Command Prompt:
 
 ```bash
 .\start.bat
 ```
 
-- **Base URL:** `http://localhost:8080`
-- **Docs:** `http://localhost:8080/ui`
-- **Health Check:** `GET /api/`
-- Frontend will be available at **http://localhost:5174**
+- **Backend**: `http://localhost:8080`
+- **Docs**: `http://localhost:8080/ui`
+- **Health Check**: `GET /api/`
+- **Frontend**: `http://localhost:5174`
 
 ---
 
