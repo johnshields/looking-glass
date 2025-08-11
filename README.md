@@ -63,8 +63,8 @@ LookingGlass/
 1. Clone the repo:
 
 ```bash
-git clone https://github.com/johnshields/LookingGlass.git
-cd LookingGlass
+git clone https://github.com/johnshields/looking-glass.git
+cd looking-glass
 ```
 
 2. Create and activate a virtual environment:
