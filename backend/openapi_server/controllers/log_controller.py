@@ -8,10 +8,7 @@ from backend.database.db import SessionLocal
 
 # Helpers
 def _validate_uuid(id: str):
-    """
-    Validates if a given string is a proper UUID (version 4).
-    Returns a UUID object or None if invalid.
-    """
+    """Validates if a given string is a proper UUID. Returns a UUID object or None if invalid."""
     try:
         return UUID(id, version=4)
     except ValueError:
