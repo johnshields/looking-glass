@@ -4,7 +4,7 @@ import uuid
 
 
 class DailyLog:
-    """DailyLog model — manually cleaned and updated for SQL schema"""
+    """DailyLog model"""
 
     def __init__(
             self,
@@ -55,7 +55,7 @@ class DailyLog:
 
 
 class UpdateLog:
-    """UpdateLog model (for PUT requests) — does NOT include ID or timestamps"""
+    """UpdateLog model (for PUT requests)"""
 
     def __init__(
             self,

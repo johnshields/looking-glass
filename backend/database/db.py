@@ -1,6 +1,4 @@
-﻿# backend/database/db.py
-
-from sqlalchemy import create_engine
+﻿from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from dotenv import load_dotenv
 from pathlib import Path
@@ -21,7 +19,7 @@ DB_URL = f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_POR
 
 print(f"Connecting as {MYSQL_USER} to {MYSQL_DB} at {MYSQL_HOST}:{MYSQL_PORT}")
 
-# Initialize SQLAlchemy engine and session
+# Initialise SQLAlchemy engine and session
 engine = create_engine(DB_URL, echo=True, future=True)
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 Base = declarative_base()

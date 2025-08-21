@@ -6,8 +6,7 @@ from sqlalchemy import text
 from backend.database.db import SessionLocal
 
 
-# ----------------- Helper Functions ----------------- #
-
+# Helpers
 def _validate_uuid(id: str):
     """
     Validates if a given string is a proper UUID (version 4).
@@ -29,12 +28,11 @@ def _get_json_body():
     return connexion.request.get_json(), None
 
 
-# ----------------- Routes ----------------- #
-
+# Routes
 def logs_post(body=None):
     """
-    Create a new daily log entry.
-    Expects title, entries, log_date, tags, and mood in the request body.
+    Create a new daily log entry. Expects title,
+    entries, log_date, tags, and mood in the request body.
     """
     data, error = _get_json_body()
     if error:
@@ -66,9 +64,7 @@ def logs_post(body=None):
 
 
 def logs_get():
-    """
-    Retrieve all logs sorted by log_date descending.
-    """
+    """Retrieve all logs sorted by log_date descending."""
     db = SessionLocal()
     try:
         result = db.execute(text("""
@@ -95,9 +91,7 @@ def logs_get():
 
 
 def logs_id_get(id: str):
-    """
-    Retrieve a single log entry by UUID.
-    """
+    """Retrieve a single log entry by UUID."""
     if not _validate_uuid(id):
         return None, 400, {"error": "Invalid UUID format for ID"}
 
@@ -133,9 +127,7 @@ def logs_id_get(id: str):
 
 
 def logs_id_put(id: str, body=None):
-    """
-    Update an existing log by ID.
-    """
+    """Update an existing log by ID."""
     if not _validate_uuid(id):
         return None, 400, {"error": f"Invalid UUID format for ID: {id}"}
 
@@ -183,18 +175,13 @@ def logs_id_put(id: str, body=None):
 
 
 def logs_id_delete(id: str):
-    """
-    Delete a log entry by UUID.
-    """
+    """Delete a log entry by UUID."""
     if not _validate_uuid(id):
         return None, 400, {"error": "Invalid UUID format for ID"}
 
     db = SessionLocal()
     try:
-        result = db.execute(
-            text("DELETE FROM daily_log WHERE id = :id"),
-            {"id": id}
-        )
+        result = db.execute(text("DELETE FROM daily_log WHERE id = :id"), {"id": id})
         db.commit()
 
         if result.rowcount == 0:
