@@ -6,8 +6,7 @@ from sqlalchemy import text
 from backend.database.db import SessionLocal
 
 
-# ----------------- Helper Functions ----------------- #
-
+# Helpers
 def _validate_uuid(id: str):
     """
     Validates if a given string is a proper UUID (version 4).
@@ -29,8 +28,7 @@ def _get_json_body():
     return connexion.request.get_json(), None
 
 
-# ----------------- Routes ----------------- #
-
+# Routes
 def logs_post(body=None):
     """
     Create a new daily log entry.
@@ -191,10 +189,7 @@ def logs_id_delete(id: str):
 
     db = SessionLocal()
     try:
-        result = db.execute(
-            text("DELETE FROM daily_log WHERE id = :id"),
-            {"id": id}
-        )
+        result = db.execute(text("DELETE FROM daily_log WHERE id = :id"), {"id": id})
         db.commit()
 
         if result.rowcount == 0:
