@@ -1,7 +1,7 @@
 # 🪞LookingGlass
 
 A minimalist daily log tracker - reflect on what you did today.  
-Built with **Python + FastAPI**, **MySQL** and **React + TypeScript**.
+Built with **Python + Flask**, **MySQL** and **React + TypeScript**.
 
 ![image](https://github.com/user-attachments/assets/8c754399-f721-41bd-bfd2-e77527a7c465)
 
