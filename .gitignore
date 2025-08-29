@@ -86,4 +86,4 @@ backend/.env
 /frontend/npm-debug.log*
 
 # misc
-/sql/test.sql
+works/sql/test.sql
